@@ -1,0 +1,5 @@
+PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/jvm/jdk1.8.0_201/bin:/usr/lib/jvm/jdk1.8.0_201/db/bin:/usr/lib/jvm/jdk1.8.0_201/jre/bin"
+J2SDKDIR="/usr/lib/jvm/jdk1.8.0_201"
+J2REDIR="/usr/lib/jvm/jdk1.8.0_201/jre"
+JAVA_HOME="/usr/lib/jvm/jdk1.8.0_201"
+DERBY_HOME="/usr/lib/jvm/jdk1.8.0_201/db"

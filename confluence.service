@@ -1,0 +1,13 @@
+[Unit]
+Description=Atlassian Confluence
+After=syslog.target network.target
+
+[Service]
+Type=forking
+User=vagrant
+ExecStart=/home/vagrant/confluence/atlassian-confluence-7.4.5/bin/start-confluence.sh
+ExecStop=/home/vagrant/confluence/atlassian-confluence-7.4.5/bin/stop-confluence.sh
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target 

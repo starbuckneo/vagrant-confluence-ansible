@@ -1,0 +1,92 @@
+---
+- name: Test random filter
+  hosts: all
+  become: yes
+  gather_facts: False
+  vars:
+  tasks:
+    - apt: "name={{ item }} state=present"
+      with_items:
+        - git
+        - wget
+        - curl
+        - unzip
+        - openssl
+        - systemd
+
+    - name: Download jdk 8
+      get_url:
+        url: https://github.com/frekele/oracle-java/releases/download/8u201-b09/jdk-8u201-linux-x64.tar.gz
+        dest: /home/vagrant/
+
+    - name: Install jdk8
+      shell: |
+        sudo mkdir /usr/lib/jvm
+        cd /usr/lib/jvm
+        sudo tar -xvzf /home/vagrant/jdk-8u201-linux-x64.tar.gz
+      become: true
+
+    - name: Copy plugin list to Jenkins home
+      copy:
+        src: "environment"
+        dest: "/etc/"
+      become: true
+
+    - name: alternatives link for "java"
+      alternatives:
+        name: java
+        link: /usr/bin/java
+        path: "/usr/lib/jvm/jdk1.8.0_201/bin/java"
+      become: true
+
+    - name: alternatives link for "javac"
+      alternatives:
+        name: javac
+        link: /usr/bin/javac
+        path: "/usr/lib/jvm/jdk1.8.0_201/bin/javac"
+      become: true
+
+    - name: alternatives link for "jar"
+      alternatives:
+        name: jar
+        link: /usr/bin/jar
+        path: "/usr/lib/jvm/jdk1.8.0_201/bin/jar"
+      become: true
+
+    - name: Download confluence
+      get_url:
+        url: https://product-downloads.atlassian.com/software/confluence/downloads/atlassian-confluence-7.4.5.tar.gz
+        dest: /home/vagrant
+
+    - name: Install confluence
+      shell: |
+        mkdir /home/vagrant/confluence
+        tar -xzf atlassian-confluence-7.4.5.tar.gz -C /home/vagrant/confluence
+        cd /home/vagrant/confluence
+        tar -xzf atlassian-confluence-7.4.5.tar
+        chown -R vagrant /home/vagrant/confluence
+        chmod -R u=rwx,go-rwx /home/vagrant/confluence
+        mkdir /home/vagrant/confluence-home
+        chown -R vagrant /home/vagrant/confluence-home
+        chmod -R u=rwx,go-rwx /home/vagrant/confluence-home
+      args:
+        creates: "/home/vagrant/confluence/atlassian-confluence-7.4.5/bin/start-confluence.sh"
+      become: true
+
+    - name: Copy Confluence home to Confluence
+      copy:
+        src: "confluence-init.properties"
+        dest: "/home/vagrant/confluence/atlassian-confluence-7.4.5/confluence/WEB-INF/classes"
+      become: true
+
+    - name: Copy Confluence service
+      copy:
+        src: "confluence.service"
+        dest: "/etc/systemd/system/"
+      become: true
+
+    - name: Start Confluence
+      shell: |
+        sudo systemctl enable confluence
+        sudo systemctl start confluence
+      become: true
