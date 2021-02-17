@@ -19,8 +19,8 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provider "virtualbox" do |v|
-    v.memory = 2048
-    v.cpus = 4
+    v.memory = 4048
+    v.cpus = 8
   end
 
   # Disable automatic box update checking. If you disable this, then
